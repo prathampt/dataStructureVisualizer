@@ -1,3 +1,4 @@
+// Function to draw text on the screen
 #include <GL/glut.h>
 #include <math.h>
 #include <stdbool.h>
@@ -13,9 +14,24 @@ int lastMouseX;
 int lastMouseY;
 bool mouseDown = false;
 
-// Function to draw a sphere
-void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z)
+void drawText(float x, float y, float z, char* text)
 {
+    glColor3f(1.0f, 1.0f, 1.0f); // Set text color to white
+    int xStart = x;
+    int yStart = y;
+ 
+    glRasterPos3f(xStart, yStart, z);
+    while (*text)
+    {
+
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *text); // Using larger font size
+        text++;
+    }
+}
+// Function to draw a sphere
+void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char* text)
+{
+    drawText(x, y, z+0.75, text);
     glColor3fv(color); // Set sphere color
     glPushMatrix();
     glTranslatef(x, y, z); // Move sphere
@@ -31,22 +47,9 @@ void drawLine(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloa
     glVertex3f(x1, y1, z1);
     glVertex3f(x2, y2, z2);
     glEnd();
+
 }
 
-// Function to draw text on the screen
-void drawText(float x, float y, float z, char* text, float radius)
-{
-    glColor3f(1.0f, 1.0f, 1.0f); // Set text color to white
-    int xStart = x;
-    int yStart = y;
- 
-    glRasterPos3f(xStart, yStart, z);
-    while (*text)
-    {
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *text); // Using larger font size
-        text++;
-    }
-}
 
 // Function to handle mouse movement
 void mouseMovement(int x, int y)
@@ -104,26 +107,18 @@ void display()
 
     // Draw first sphere (red)
     GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
-    drawSphere(0.6f, 30, 30, redColor, -2.0f, 0.0f, 0.0f);
-    drawText(-2.5f, 0.0f, 0.8f, "1", 0.6f);
+    drawSphere(0.6f, 30, 30, redColor, -2.0f, 0.0f, 0.0f,"1");
 
     // Draw second sphere (green)
     GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
-    drawSphere(0.6f, 30, 30, greenColor, 2.0f, 0.0f, 0.0f);
-    drawText(2.0f, 0.0f, 0.8f, "2", 0.6f);
+    drawSphere(0.6f, 30, 30, greenColor, 2.0f, 0.0f, 0.0f,"2" );
 
     // Draw third sphere (blue)
     GLfloat blueColor[3] = {0.0f, 0.0f, 1.0f};
-    drawSphere(0.6f, 30, 30, blueColor, 0.0f, 2.0f, 0.0f);
-    drawText(-0.5f, 2.0f, 1.0f, "Bhavya", 0.6f);
-
-    drawSphere(0.6f, 30, 30, blueColor, -3.0f, -2.0f, 0.0f);
-    drawText(-3.5f, -2.0f, 0.8f, "4", 0.6f);
-    drawSphere(0.6f, 30, 30, blueColor, -1.0f, -4.0f, 0.0f);
-    drawText(-1.5f, -4.0f, 0.8f, "5", 0.6f);
-
-    drawSphere(0.6f, 30, 30, greenColor, -1.0f, -2.0f, 0.0f);
-    drawText(-1.5f, -2.0f, 0.8f, "6", 0.6f);
+    drawSphere(0.6f, 30, 30, blueColor, 0.0f, 2.0f, 0.0f,"Bhavya" );
+    drawSphere(0.6f, 30, 30, blueColor, -3.0f, -2.0f, 0.0f,"4" );
+    drawSphere(0.6f, 30, 30, blueColor, -1.0f, -4.0f, 0.0f,"5" );
+    drawSphere(0.6f, 30, 30, greenColor, -1.0f, -2.0f, 0.0f,"6" );
 
     // Draw connection line between the spheres
     GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
