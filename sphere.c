@@ -32,6 +32,7 @@ void drawText(float x, float y, float z, char* text)
 void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char* text)
 {
     drawText(x, y, z+0.75, text);
+    drawText(x, y, z-0.75, text);
     glColor3fv(color); // Set sphere color
     glPushMatrix();
     glTranslatef(x, y, z); // Move sphere
@@ -141,21 +142,21 @@ void reshape(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-int main(int argc, char **argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("OpenGL Spheres with Connection Line");
+// int main(int argc, char **argv)
+// {
+//     glutInit(&argc, argv);
+//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+//     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+//     glutCreateWindow("OpenGL Spheres with Connection Line");
 
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMotionFunc(mouseMovement);
-    glutMouseFunc(mouseButton);
+//     glutDisplayFunc(display);
+//     glutReshapeFunc(reshape);
+//     glutMotionFunc(mouseMovement);
+//     glutMouseFunc(mouseButton);
 
-    initGL();
+//     initGL();
 
-    glutMainLoop();
+//     glutMainLoop();
 
-    return 0;
-}
+//     return 0;
+// }
