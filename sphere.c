@@ -10,6 +10,7 @@
 // Variables
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
+float zoomFactor = 1.0f;
 int lastMouseX;
 int lastMouseY;
 bool mouseDown = false;
@@ -141,6 +142,51 @@ void reshape(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
+void zoomIn() {
+    // Decrease the zoom factor
+    zoomFactor *= 0.9f; // You can adjust the factor as needed
+    
+    // Update the projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    // Apply the zoom factor
+    gluPerspective(45.0f * zoomFactor, 16.0f/9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
+    
+    // Switch back to modelview matrix
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Request a redraw
+    glutPostRedisplay();
+}
+
+void zoomOut() {
+    // Decrease the zoom factor
+    zoomFactor /= 0.9f; // You can adjust the factor as needed
+    
+    // Update the projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    // Apply the zoom factor
+    gluPerspective(45.0f * zoomFactor, 16.0f/9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
+    
+    // Switch back to modelview matrix
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Request a redraw
+    glutPostRedisplay();
+}
+
+void keyboard(unsigned char key, int x, int y) {
+    if (key == '+') {
+        zoomIn();
+    }
+    if (key == '-') {
+	zoomOut();
+    }
+}
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
@@ -152,8 +198,10 @@ int main(int argc, char **argv)
     glutReshapeFunc(reshape);
     glutMotionFunc(mouseMovement);
     glutMouseFunc(mouseButton);
+    glutKeyboardFunc(keyboard);
 
     initGL();
+
 
     glutMainLoop();
 
