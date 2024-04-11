@@ -17,8 +17,8 @@ bool mouseDown = false;
 void drawText(float x, float y, float z, char* text)
 {
     glColor3f(1.0f, 1.0f, 1.0f); // Set text color to white
-    int xStart = x;
-    int yStart = y;
+    float xStart = x;
+    float yStart = y;
  
     glRasterPos3f(xStart, yStart, z);
     while (*text)
@@ -141,21 +141,21 @@ void reshape(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-// int main(int argc, char **argv)
-// {
-//     glutInit(&argc, argv);
-//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-//     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-//     glutCreateWindow("OpenGL Spheres with Connection Line");
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    glutCreateWindow("OpenGL Spheres with Connection Line");
 
-//     glutDisplayFunc(display);
-//     glutReshapeFunc(reshape);
-//     glutMotionFunc(mouseMovement);
-//     glutMouseFunc(mouseButton);
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutMotionFunc(mouseMovement);
+    glutMouseFunc(mouseButton);
 
-//     initGL();
+    initGL();
 
-//     glutMainLoop();
+    glutMainLoop();
 
-//     return 0;
-// }
+    return 0;
+}
