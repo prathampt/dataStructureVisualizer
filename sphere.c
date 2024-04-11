@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include<stdio.h>
+#include<string.h>
 // Constants
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
