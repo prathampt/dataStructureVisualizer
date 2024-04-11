@@ -255,33 +255,77 @@ void threeDtree()
     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
-    threeDrecursion(0.0f, 0.75f * h, 0.0f, globalTree, h);
+    threeDrecursion(0.0f, 0.75f * h, 0.0f, globalTree, h, 0, count(globalTree));
 
     glutSwapBuffers();
 }
 
-void threeDrecursion(GLfloat x, GLfloat y, GLfloat z, Tree t, int h)
+void threeDrecursion(GLfloat x, GLfloat y, GLfloat z, Tree t, int h, int k, int totalNodes)
 {
 
     if (!t)
         return;
 
-    GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
+    GLfloat Color[3];
+    generateColor(Color, k, totalNodes);
+
     GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
 
-    drawSphere(0.6f, 30, 30, greenColor, x, y, z, t->name);
+    drawSphere(0.6f, 30, 30, Color, x, y, z, t->name);
 
     if (t->left)
     {
-        threeDrecursion(x - pow(2, h - 1), y - 2, z, t->left, h - 1);
+        threeDrecursion(x - pow(2, h - 1), y - 2, z, t->left, h - 1, k * 2 + 1, totalNodes);
         drawLine(x, y, z, x - pow(2, h - 1), y - 2, z, lineColor);
     }
 
     if (t->right)
     {
-        threeDrecursion(x + pow(2, h - 1), y - 2, z, t->right, h - 1);
+        threeDrecursion(x + pow(2, h - 1), y - 2, z, t->right, h - 1, k * 2 + 2, totalNodes);
         drawLine(x, y, z, x + pow(2, h - 1), y - 2, z, lineColor);
     }
+}
+
+void generateColor(float *color, int index, int totalNodes) {
+    float hue = (float)index / totalNodes;  // Varying hue based on node index
+    float saturation = 1.0f;  // Full saturation for vibrant colors
+    float lightness = 0.5f;  // Medium lightness for balanced colors
+
+    // Convert HSL to RGB
+    float c = (1.0f - fabs(2.0f * lightness - 1.0f)) * saturation;
+    float x = c * (1.0f - fabs(fmod(6.0f * hue, 2.0f) - 1.0f));
+    float m = lightness - 0.5f * c;
+    float r, g, b;
+
+    if (hue < 1.0f / 6.0f) {
+        r = c;
+        g = x;
+        b = 0.0f;
+    } else if (hue < 2.0f / 6.0f) {
+        r = x;
+        g = c;
+        b = 0.0f;
+    } else if (hue < 3.0f / 6.0f) {
+        r = 0.0f;
+        g = c;
+        b = x;
+    } else if (hue < 4.0f / 6.0f) {
+        r = 0.0f;
+        g = x;
+        b = c;
+    } else if (hue < 5.0f / 6.0f) {
+        r = x;
+        g = 0.0f;
+        b = c;
+    } else {
+        r = c;
+        g = 0.0f;
+        b = x;
+    }
+
+    color[0] = r + m;
+    color[1] = g + m;
+    color[2] = b + m;
 }
 
 int start(int argc, char **argv)
