@@ -31,8 +31,7 @@ void drawText(float x, float y, float z, char* text)
 // Function to draw a sphere
 void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char* text)
 {
-    drawText(x, y, z+0.75, text);
-    drawText(x, y, z-0.75, text);
+    drawText(x+radius, y, z, text);
     glColor3fv(color); // Set sphere color
     glPushMatrix();
     glTranslatef(x, y, z); // Move sphere
