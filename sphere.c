@@ -3,9 +3,11 @@
 #include <math.h>
 #include <stdbool.h>
 #include<stdio.h>
+#include <GL/freeglut.h>
+
 // Constants
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 
 // Variables
 GLfloat angleX = 0.0f;
@@ -31,8 +33,7 @@ void drawText(float x, float y, float z, char* text)
 // Function to draw a sphere
 void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char* text)
 {
-    drawText(x, y, z+0.75, text);
-    drawText(x, y, z-0.75, text);
+    drawText(x, y, z + 0.601, text);
     glColor3fv(color); // Set sphere color
     glPushMatrix();
     glTranslatef(x, y, z); // Move sphere
@@ -97,40 +98,40 @@ void initGL()
 }
 
 // Function to render scene
-void display()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-    gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
+// void display()
+// {
+//     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//     glLoadIdentity();
+//     gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
 
-    glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
-    glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
+//     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
+//     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
-    // Draw first sphere (red)
-    GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
-    drawSphere(0.6f, 30, 30, redColor, -2.0f, 0.0f, 0.0f,"1");
+//     // Draw first sphere (red)
+//     GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
+//     drawSphere(0.6f, 30, 30, redColor, -2.0f, 0.0f, 0.0f,"1");
 
-    // Draw second sphere (green)
-    GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
-    drawSphere(0.6f, 30, 30, greenColor, 2.0f, 0.0f, 0.0f,"2" );
+//     // Draw second sphere (green)
+//     GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
+//     drawSphere(0.6f, 30, 30, greenColor, 2.0f, 0.0f, 0.0f,"2" );
 
-    // Draw third sphere (blue)
-    GLfloat blueColor[3] = {0.0f, 0.0f, 1.0f};
-    drawSphere(0.6f, 30, 30, blueColor, 0.0f, 2.0f, 0.0f,"Bhavya" );
-    drawSphere(0.6f, 30, 30, blueColor, -3.0f, -2.0f, 0.0f,"4" );
-    drawSphere(0.6f, 30, 30, blueColor, -1.0f, -4.0f, 0.0f,"5" );
-    drawSphere(0.6f, 30, 30, greenColor, -1.0f, -2.0f, 0.0f,"6" );
+//     // Draw third sphere (blue)
+//     GLfloat blueColor[3] = {0.0f, 0.0f, 1.0f};
+//     drawSphere(0.6f, 30, 30, blueColor, 0.0f, 2.0f, 0.0f,"Bhavya" );
+//     drawSphere(0.6f, 30, 30, blueColor, -3.0f, -2.0f, 0.0f,"4" );
+//     drawSphere(0.6f, 30, 30, blueColor, -1.0f, -4.0f, 0.0f,"5" );
+//     drawSphere(0.6f, 30, 30, greenColor, -1.0f, -2.0f, 0.0f,"6" );
 
-    // Draw connection line between the spheres
-    GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
-    drawLine(-2.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, lineColor);
-    drawLine(2.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, lineColor);
-    drawLine(-2.0f, 0.0f, 0.0f, -3.0f, -2.0f, 0.0f, lineColor);
-    drawLine(-2.0f, 0.0f, 0.0f, -1.0f, -2.0f, 0.0f, lineColor);
-    drawLine(-1.0f, -2.0f, 0.0f, -1.0f, -4.0f, 0.0f, lineColor);
+//     // Draw connection line between the spheres
+//     GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
+//     drawLine(-2.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, lineColor);
+//     drawLine(2.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, lineColor);
+//     drawLine(-2.0f, 0.0f, 0.0f, -3.0f, -2.0f, 0.0f, lineColor);
+//     drawLine(-2.0f, 0.0f, 0.0f, -1.0f, -2.0f, 0.0f, lineColor);
+//     drawLine(-1.0f, -2.0f, 0.0f, -1.0f, -4.0f, 0.0f, lineColor);
 
-    glutSwapBuffers();
-}
+//     glutSwapBuffers();
+// }
 
 // Function to handle window resizing
 void reshape(int width, int height)

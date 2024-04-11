@@ -72,7 +72,8 @@ int count(Tree t)
     return 1 + count(t->left) + count(t->right);
 }
 
-int level(Tree t){
+int level(Tree t)
+{
 
     if (!t)
         return 0;
@@ -80,11 +81,11 @@ int level(Tree t){
     return 1 + MAX(level(t->left), level(t->right));
 }
 
-int height(Tree t){
+int height(Tree t)
+{
 
     return level(t) - 1;
 }
-
 
 void removeNode(Tree *t, char *name)
 {
@@ -243,49 +244,54 @@ void postorderTraversal(Tree t)
     return;
 }
 
-void threeDtree(){
+void threeDtree()
+{
+    int h = height(globalTree);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
+    gluLookAt(0.0f, 0.0f, 5.0f + 3.0f * h, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
 
     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
-    int h = height(globalTree);
+    threeDrecursion(0.0f, 0.75f * h, 0.0f, globalTree, h);
 
-    threeDrecursion(0.0f, 2.0f, 0.0f, globalTree, h);
-    
     glutSwapBuffers();
 }
 
-void threeDrecursion(GLfloat x, GLfloat y, GLfloat z,Tree t, int h){
-    
-    if (!t) return;
+void threeDrecursion(GLfloat x, GLfloat y, GLfloat z, Tree t, int h)
+{
+
+    if (!t)
+        return;
 
     GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
     GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
 
     drawSphere(0.6f, 30, 30, greenColor, x, y, z, t->name);
 
-    if (t->left){
+    if (t->left)
+    {
         threeDrecursion(x - pow(2, h - 1), y - 2, z, t->left, h - 1);
         drawLine(x, y, z, x - pow(2, h - 1), y - 2, z, lineColor);
     }
 
-    if (t->right){
+    if (t->right)
+    {
         threeDrecursion(x + pow(2, h - 1), y - 2, z, t->right, h - 1);
         drawLine(x, y, z, x + pow(2, h - 1), y - 2, z, lineColor);
     }
-
 }
 
-int start(int argc, char **argv){
+int start(int argc, char **argv)
+{
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("OpenGL Spheres with Connection Line");
+    glutCreateWindow("DataStructure Visualizer...");
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
     glutDisplayFunc(threeDtree);
     glutReshapeFunc(reshape);
@@ -295,4 +301,6 @@ int start(int argc, char **argv){
     initGL();
 
     glutMainLoop();
+
+    return 0;
 }
