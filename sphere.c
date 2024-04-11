@@ -189,23 +189,23 @@ void keyboard(unsigned char key, int x, int y) {
     }
 }
 
-int main(int argc, char **argv)
-{
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("OpenGL Spheres with Connection Line");
+// int main(int argc, char **argv)
+// {
+//     glutInit(&argc, argv);
+//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+//     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+//     glutCreateWindow("OpenGL Spheres with Connection Line");
 
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMotionFunc(mouseMovement);
-    glutMouseFunc(mouseButton);
-    glutKeyboardFunc(keyboard);
+//     glutDisplayFunc(display);
+//     glutReshapeFunc(reshape);
+//     glutMotionFunc(mouseMovement);
+//     glutMouseFunc(mouseButton);
+//     glutKeyboardFunc(keyboard);
 
-    initGL();
+//     initGL();
 
 
-    glutMainLoop();
+//     glutMainLoop();
 
-    return 0;
-}
+//     return 0;
+// }
