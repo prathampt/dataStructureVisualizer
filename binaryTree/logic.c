@@ -341,6 +341,7 @@ int start(int argc, char **argv)
     glutReshapeFunc(reshape);
     glutMotionFunc(mouseMovement);
     glutMouseFunc(mouseButton);
+    glutKeyboardFunc(keyboard);
 
     initGL();
 
