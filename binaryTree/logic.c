@@ -72,7 +72,8 @@ int count(Tree t)
     return 1 + count(t->left) + count(t->right);
 }
 
-int level(Tree t){
+int level(Tree t)
+{
 
     if (!t)
         return 0;
@@ -80,11 +81,11 @@ int level(Tree t){
     return 1 + MAX(level(t->left), level(t->right));
 }
 
-int height(Tree t){
+int height(Tree t)
+{
 
     return level(t) - 1;
 }
-
 
 void removeNode(Tree *t, char *name)
 {
@@ -243,56 +244,108 @@ void postorderTraversal(Tree t)
     return;
 }
 
-void threeDtree(){
+void threeDtree()
+{
+    int h = height(globalTree);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
+    gluLookAt(0.0f, 0.0f, 5.0f + 3.0f * h, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
 
     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
-    int h = height(globalTree);
+    threeDrecursion(0.0f, 0.75f * h, 0.0f, globalTree, h, 0, count(globalTree));
 
-    threeDrecursion(0.0f, 2.0f, 0.0f, globalTree, h);
-    
     glutSwapBuffers();
 }
 
-void threeDrecursion(GLfloat x, GLfloat y, GLfloat z,Tree t, int h){
-    
-    if (!t) return;
+void threeDrecursion(GLfloat x, GLfloat y, GLfloat z, Tree t, int h, int k, int totalNodes)
+{
 
-    GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
+    if (!t)
+        return;
+
+    GLfloat Color[3];
+    generateColor(Color, k, totalNodes);
+
     GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
 
-    drawSphere(0.6f, 30, 30, greenColor, x, y, z, t->name);
+    drawSphere(0.6f, 30, 30, Color, x, y, z, t->name);
 
-    if (t->left){
-        threeDrecursion(x - pow(2, h - 1), y - 2, z, t->left, h - 1);
+    if (t->left)
+    {
+        threeDrecursion(x - pow(2, h - 1), y - 2, z, t->left, h - 1, k * 2 + 1, totalNodes);
         drawLine(x, y, z, x - pow(2, h - 1), y - 2, z, lineColor);
     }
 
-    if (t->right){
-        threeDrecursion(x + pow(2, h - 1), y - 2, z, t->right, h - 1);
+    if (t->right)
+    {
+        threeDrecursion(x + pow(2, h - 1), y - 2, z, t->right, h - 1, k * 2 + 2, totalNodes);
         drawLine(x, y, z, x + pow(2, h - 1), y - 2, z, lineColor);
     }
-
 }
 
-int start(int argc, char **argv){
+void generateColor(float *color, int index, int totalNodes) {
+    float hue = (float)index / totalNodes;  // Varying hue based on node index
+    float saturation = 1.0f;  // Full saturation for vibrant colors
+    float lightness = 0.5f;  // Medium lightness for balanced colors
+
+    // Convert HSL to RGB
+    float c = (1.0f - fabs(2.0f * lightness - 1.0f)) * saturation;
+    float x = c * (1.0f - fabs(fmod(6.0f * hue, 2.0f) - 1.0f));
+    float m = lightness - 0.5f * c;
+    float r, g, b;
+
+    if (hue < 1.0f / 6.0f) {
+        r = c;
+        g = x;
+        b = 0.0f;
+    } else if (hue < 2.0f / 6.0f) {
+        r = x;
+        g = c;
+        b = 0.0f;
+    } else if (hue < 3.0f / 6.0f) {
+        r = 0.0f;
+        g = c;
+        b = x;
+    } else if (hue < 4.0f / 6.0f) {
+        r = 0.0f;
+        g = x;
+        b = c;
+    } else if (hue < 5.0f / 6.0f) {
+        r = x;
+        g = 0.0f;
+        b = c;
+    } else {
+        r = c;
+        g = 0.0f;
+        b = x;
+    }
+
+    color[0] = r + m;
+    color[1] = g + m;
+    color[2] = b + m;
+}
+
+int start(int argc, char **argv)
+{
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    glutCreateWindow("OpenGL Spheres with Connection Line");
+    glutCreateWindow("DataStructure Visualizer...");
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
     glutDisplayFunc(threeDtree);
     glutReshapeFunc(reshape);
     glutMotionFunc(mouseMovement);
     glutMouseFunc(mouseButton);
+    glutKeyboardFunc(keyboard);
 
     initGL();
 
     glutMainLoop();
+
+    return 0;
 }

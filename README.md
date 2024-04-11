@@ -5,6 +5,6 @@ To Run the code you need to Download libraries of OpenGL
 
 and you can compile  the sphere.c file by 
 ```
-gcc -o sphere sphere.c -lGL -lGLU -lglut
+gcc -o sphere sphere.c -lGL -lGLU -lglut -lm
 ```
 
