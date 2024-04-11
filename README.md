@@ -6,6 +6,6 @@ apt-cache search glut
 
 and you can compile  the sphere.c file by 
 ```
-gcc -o sphere sphere.c -lGL -lGLU -lglut
+gcc -o sphere sphere.c -lGL -lGLU -lglut -lm
 ```
 

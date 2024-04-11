@@ -12,6 +12,7 @@
 // Variables
 GLfloat angleX = 0.0f;
 GLfloat angleY = 0.0f;
+float zoomFactor = 1.0f;
 int lastMouseX;
 int lastMouseY;
 bool mouseDown = false;
@@ -19,8 +20,8 @@ bool mouseDown = false;
 void drawText(float x, float y, float z, char* text)
 {
     glColor3f(1.0f, 1.0f, 1.0f); // Set text color to white
-    int xStart = x;
-    int yStart = y;
+    float xStart = x;
+    float yStart = y;
  
     glRasterPos3f(xStart, yStart, z);
     while (*text)
@@ -33,7 +34,7 @@ void drawText(float x, float y, float z, char* text)
 // Function to draw a sphere
 void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char* text)
 {
-    drawText(x, y, z + 0.601, text);
+    drawText(x + radius, y, z + 0.601, text);
     glColor3fv(color); // Set sphere color
     glPushMatrix();
     glTranslatef(x, y, z); // Move sphere
@@ -143,21 +144,68 @@ void reshape(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-// int main(int argc, char **argv)
-// {
-//     glutInit(&argc, argv);
-//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-//     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-//     glutCreateWindow("OpenGL Spheres with Connection Line");
+void zoomIn() {
+    // Decrease the zoom factor
+    zoomFactor *= 0.9f; // You can adjust the factor as needed
+    
+    // Update the projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    // Apply the zoom factor
+    gluPerspective(45.0f * zoomFactor, 16.0f/9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
+    
+    // Switch back to modelview matrix
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Request a redraw
+    glutPostRedisplay();
+}
 
-//     glutDisplayFunc(display);
-//     glutReshapeFunc(reshape);
-//     glutMotionFunc(mouseMovement);
-//     glutMouseFunc(mouseButton);
+void zoomOut() {
+    // Decrease the zoom factor
+    zoomFactor /= 0.9f; // You can adjust the factor as needed
+    
+    // Update the projection matrix
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    // Apply the zoom factor
+    gluPerspective(45.0f * zoomFactor, 16.0f/9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
+    
+    // Switch back to modelview matrix
+    glMatrixMode(GL_MODELVIEW);
+    
+    // Request a redraw
+    glutPostRedisplay();
+}
 
-//     initGL();
+void keyboard(unsigned char key, int x, int y) {
+    if (key == '+') {
+        zoomIn();
+    }
+    if (key == '-') {
+	zoomOut();
+    }
+}
 
-//     glutMainLoop();
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    glutCreateWindow("OpenGL Spheres with Connection Line");
 
-//     return 0;
-// }
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutMotionFunc(mouseMovement);
+    glutMouseFunc(mouseButton);
+    glutKeyboardFunc(keyboard);
+
+    initGL();
+
+
+    glutMainLoop();
+
+    return 0;
+}
