@@ -2,7 +2,7 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdbool.h>
-#include<stdio.h>
+#include <stdio.h>
 #include <GL/freeglut.h>
 
 // Constants
@@ -17,12 +17,12 @@ int lastMouseX;
 int lastMouseY;
 bool mouseDown = false;
 
-void drawText(float x, float y, float z, char* text)
+void drawText(float x, float y, float z, char *text)
 {
     glColor3f(1.0f, 1.0f, 1.0f); // Set text color to white
     float xStart = x;
     float yStart = y;
- 
+
     glRasterPos3f(xStart, yStart, z);
     while (*text)
     {
@@ -32,10 +32,11 @@ void drawText(float x, float y, float z, char* text)
     }
 }
 // Function to draw a sphere
-void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char* text)
+void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat x, GLfloat y, GLfloat z, char *text)
 {
     drawText(x + radius, y, z + 0.601, text);
-    glColor3fv(color); // Set sphere color
+    glEnable(GL_COLOR_MATERIAL); // Enable color tracking for ambient and diffuse properties
+    glColor3fv(color);           // Set sphere color
     glPushMatrix();
     glTranslatef(x, y, z); // Move sphere
     glutSolidSphere(radius, slices, stacks);
@@ -45,12 +46,33 @@ void drawSphere(float radius, int slices, int stacks, GLfloat color[3], GLfloat 
 // Function to draw a line between two points
 void drawLine(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2, GLfloat color[3])
 {
-    glColor3fv(color); // Set line color
+    glEnable(GL_DEPTH_TEST); // Enable depth testing
+    glEnable(GL_LIGHTING);   // Enable lighting
+    glEnable(GL_LIGHT0);     // Enable light source 0 (adjust as needed)
+
+    GLfloat lineThickness = 10.0f; // Adjust line thickness as needed
+
+    glLineWidth(lineThickness); // Set line thickness
+
+    // Set material properties (ambient, diffuse, specular)
+    GLfloat materialAmbient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    GLfloat materialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat materialSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat materialShininess = 100.0f; // Adjust shininess as needed
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);
+
+    // Set line color
+    glColor3fv(color);
+
+    // Define line vertices
     glBegin(GL_LINES);
     glVertex3f(x1, y1, z1);
     glVertex3f(x2, y2, z2);
     glEnd();
-
 }
 
 
@@ -90,6 +112,24 @@ void mouseButton(int button, int state, int x, int y)
 // Function to initialize OpenGL
 void initGL()
 {
+    glEnable(GL_LIGHTING); // Enable lighting
+    glEnable(GL_LIGHT0);   // Enable light source 0
+
+    // Set light source properties
+    GLfloat lightPosition[] = {10.0f, 10.0f, 10.0f, 1.0f}; // Position of the light source
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+
+    // Set material properties for the sphere
+    GLfloat materialAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};  // Ambient reflection
+    GLfloat materialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};  // Diffuse reflection
+    GLfloat materialSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f}; // Specular reflection
+    GLfloat materialShininess[] = {100.0f};                // Shininess (specular exponent)
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
     glEnable(GL_DEPTH_TEST);              // Enable depth testing for 3D rendering
     glMatrixMode(GL_PROJECTION);
@@ -144,48 +184,53 @@ void reshape(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void zoomIn() {
+void zoomIn()
+{
     // Decrease the zoom factor
     zoomFactor *= 0.9f; // You can adjust the factor as needed
-    
+
     // Update the projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    
+
     // Apply the zoom factor
-    gluPerspective(45.0f * zoomFactor, 16.0f/9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
-    
+    gluPerspective(45.0f * zoomFactor, 16.0f / 9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
+
     // Switch back to modelview matrix
     glMatrixMode(GL_MODELVIEW);
-    
+
     // Request a redraw
     glutPostRedisplay();
 }
 
-void zoomOut() {
+void zoomOut()
+{
     // Decrease the zoom factor
     zoomFactor /= 0.9f; // You can adjust the factor as needed
-    
+
     // Update the projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    
+
     // Apply the zoom factor
-    gluPerspective(45.0f * zoomFactor, 16.0f/9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
-    
+    gluPerspective(45.0f * zoomFactor, 16.0f / 9.0f, 0.1f, 100.0f); // Adjust the field of view angle (45.0f) based on your scene
+
     // Switch back to modelview matrix
     glMatrixMode(GL_MODELVIEW);
-    
+
     // Request a redraw
     glutPostRedisplay();
 }
 
-void keyboard(unsigned char key, int x, int y) {
-    if (key == '+') {
+void keyboard(unsigned char key, int x, int y)
+{
+    if (key == '+')
+    {
         zoomIn();
     }
-    if (key == '-') {
-	zoomOut();
+    if (key == '-')
+    {
+        zoomOut();
     }
 }
 
@@ -203,7 +248,6 @@ void keyboard(unsigned char key, int x, int y) {
 //     glutKeyboardFunc(keyboard);
 
 //     initGL();
-
 
 //     glutMainLoop();
 
