@@ -1,4 +1,0 @@
-gcc sphere.c -o sphere -lGL -lGLU -lglut -lm
-
-# Run the above command to complile the program and 
-before that make sure that you install the openGL libraries...
