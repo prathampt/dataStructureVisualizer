@@ -1,4 +1,11 @@
+#include <GL/gl.h>
 #include <stdio.h>
+#include <GL/glut.h>
+#include <math.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#include <GL/freeglut.h>
 
 typedef struct node
 {
@@ -8,10 +15,15 @@ typedef struct node
     int id;
 } Node;
 
+typedef struct coord{
+    GLfloat x,y,z;
+}coord;
+
 typedef struct vertex
 { 
     char *vertex;
     Node *edges;
+    coord loc;
     
 } Vertex;
 

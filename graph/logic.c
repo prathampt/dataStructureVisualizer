@@ -1,11 +1,9 @@
 #include"header.h"
-#include"math.h"
 #include"queue/logic.c"
 #include"../sphere.c"
 // Constants
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
 Graph globalGraph;
+
 void initGraph(Graph *g, int numberOfVertices)
 {
     g->V = numberOfVertices;
@@ -14,6 +12,10 @@ void initGraph(Graph *g, int numberOfVertices)
 
     for (int i = 0; i < numberOfVertices; i++)
     {
+        g->array[i].loc.x = i;
+        g->array[i].loc.y = i;
+        g->array[i].loc.z = i;
+
         g->array[i].vertex = NULL;
     }
 
@@ -53,8 +55,11 @@ void addVertex(Graph *g, char *vertex)
     {
         if (g->array[i].vertex == NULL)
         {
+            GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
+            g->array[i].vertex = malloc(strlen(vertex)+1);
             strcpy(g->array[i].vertex,vertex);
-            
+            drawSphere(0.2f, 30, 30, redColor, g->array[i].loc.x, g->array[i].loc.y,g->array[i].loc.z, g->array[i].vertex);
+
             return;
         }
     }
@@ -69,7 +74,7 @@ int checkVertex(Graph g, char *vertex)
 
     for (int i = 0; i < g.V; i++)
     {
-        if (strcmp(g.array[i].vertex, vertex) == 0)
+        if (g.array[i].vertex != NULL && strcmp(g.array[i].vertex, vertex) == 0)
         {
             return i;
         }
@@ -158,85 +163,113 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
 
 //     return;
 // }
-void DisplayGraph(Graph *g)
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
-    gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
-    glRotatef(angleX, 1.0f, 0.0f, 0.0f);                              // Rotate around X axis
-    glRotatef(angleY, 0.0f, 1.0f, 0.0f);                              // Rotate around Y axis
-    GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
-    GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
+// void DisplayGraph(Graph *g)
+// {
+//     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//     glLoadIdentity();
+//     gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
+//     glRotatef(angleX, 1.0f, 0.0f, 0.0f);                              // Rotate around X axis
+//     glRotatef(angleY, 0.0f, 1.0f, 0.0f);                              // Rotate around Y axis
+//     GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
+//     GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
+//
+//     int x = 0.0f, y = 2.0f, z = 0.0f;
+//     int rho = 1;
+//     float theta, phi;
+//
+//     Queue *q = (Queue *)malloc(sizeof(Queue));
+//     if (q == NULL)
+//     {
+//         printf("Memory allocation failed for the queue.");
+//         return;
+//     }
+//     initQ(q, 2 * g->V);
+//     int visited[g->V];
+//     for (int i = 0; i < g->V; i++)
+//     {
+//         visited[i] = 0;
+//     }
+//     visited[0] = 1;
+//     Enqueue(q, 0, 0, 2, 0);
+//     while (q->front <= q->rear && q->front != -1 && q->rear != -1)
+//     {
+//         int ele = Dequeue(q);
+//         drawSphere(0.6f, 30, 30, greenColor, x, y, z, &ele);
+//         Vertex ver = g->array[ele];
+//         Node* ptr=ver.edges;
+//         int cnt = 0;
+//         for (; ptr; ptr = ptr->next)
+//             cnt += 1;
+//         int i = 0;
+//         for (; ptr; ptr = ptr->next)
+//         {
+//             if (visited[ptr->id] == 0)
+//             {
+//                 visited[ptr->id] = 1;
+//                 if (i == 0)
+//                 {
+//                     Enqueue(q, ptr->id, x, y, z + rho);
+//                     i += 1;
+//                 }
+//                 else if (i == 1)
+//                 {
+//                     Enqueue(q, ptr->id, x, y, z - rho);
+//                     i++;
+//                 }
+//                 else
+//                 {
+//                     
+//                 }
+//             }
+//
+//             i += 1;
+//         }
+//     }
+//     free(q);
+// }
+//
 
-    int x = 0.0f, y = 2.0f, z = 0.0f;
-    int rho = 1;
-    float theta, phi;
 
-    Queue *q = (Queue *)malloc(sizeof(Queue));
-    if (q == NULL)
-    {
-        printf("Memory allocation failed for the queue.");
-        return;
-    }
-    initQ(q, 2 * g->V);
-    int visited[g->V];
-    for (int i = 0; i < g->V; i++)
-    {
-        visited[i] = 0;
-    }
-    visited[0] = 1;
-    Enqueue(q, 0, 0, 2, 0);
-    while (q->front <= q->rear && q->front != -1 && q->rear != -1)
-    {
-        int ele = Dequeue(q);
-        drawSphere(0.6f, 30, 30, greenColor, x, y, z, &ele);
-        Vertex ver = g->array[ele];
-        Node* ptr=ver.edges;
-        int cnt = 0;
-        for (; ptr; ptr = ptr->next)
-            cnt += 1;
-        int i = 0;
-        for (; ptr; ptr = ptr->next)
-        {
-            if (visited[ptr->id] == 0)
-            {
-                visited[ptr->id] = 1;
-                if (i == 0)
-                {
-                    Enqueue(q, ptr->id, x, y, z + rho);
-                    i += 1;
-                }
-                else if (i == 1)
-                {
-                    Enqueue(q, ptr->id, x, y, z - rho);
-                    i++;
-                }
-                else
-                {
-                    
-                }
-            }
-
-            i += 1;
-        }
-    }
-    free(q);
+void god_func(Graph *g){
 }
 
-int start(int argc, char **argv)
-{
 
+void func(void){
+     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+     glLoadIdentity();
+     gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
+
+     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
+     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
+
+
+    initGraph(&globalGraph,5);
+    addVertex(&globalGraph,"hello");
+    addVertex(&globalGraph,"byeeesoidjfoijf");
+
+    glutSwapBuffers();
+
+
+
+    return;
+}
+
+int main(int argc, char **argv)
+{
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutCreateWindow("OpenGL Spheres with Connection Line");
 
-    glutDisplayFunc(DisplayGraph);
+    glutDisplayFunc(func);
     glutReshapeFunc(reshape);
     glutMotionFunc(mouseMovement);
     glutMouseFunc(mouseButton);
+    glutKeyboardFunc(keyboard);
 
     initGL();
 
     glutMainLoop();
+
+    return 0;
 }
