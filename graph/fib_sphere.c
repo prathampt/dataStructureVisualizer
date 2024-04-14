@@ -1,17 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#define PI 3.1415
+#include"header.h"
 
-#define PI 3.14159265358979323846
-
-typedef struct {
-    double x;
-    double y;
-    double z;
-} Point;
-
-Point* fibonacci_sphere(int samples) {
-    Point* points = (Point*)malloc(samples * sizeof(Point));
+coord* fibonacci_sphere(int samples) {
+    coord* coords = (coord*)malloc(samples * sizeof(coord));
     double phi = PI * (sqrt(5.0) - 1.0);
 
     for (int i = 0; i < samples; i++) {
@@ -23,24 +14,13 @@ Point* fibonacci_sphere(int samples) {
         double x = cos(theta) * radius;
         double z = sin(theta) * radius;
 
-        points[i].x = x;
-        points[i].y = y;
-        points[i].z = z;
+        coords[i].x = x;
+        coords[i].y = y;
+        coords[i].z = z;
     }
 
-    return points;
+    return coords;
 }
 
-int main() {
-    int samples = 1000;
-    Point* points = fibonacci_sphere(samples);
 
-    printf("x\t\ty\t\tz\n");
-    for (int i = 0; i < samples; i++) {
-        printf("%f\t%f\t%f\n", points[i].x, points[i].y, points[i].z);
-    }
-
-    free(points);
-    return 0;
-}
 
