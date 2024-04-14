@@ -1,8 +1,4 @@
-#include "header.h"
-#include "queue/logic.c"
-#include "../sphere.c"
-#include <GL/gl.h>
-#include <wctype.h>
+#include "fib_sphere.c"
 // Constants
 Graph globalGraph;
 int count(Graph g)
@@ -64,20 +60,27 @@ void addVertex(Graph *g, char *vertex)
 
     if (checkVertex(*g, vertex) != -1)
         return;
-
+    int x=0;
+    coord *points;
     for (int i = 0; i < g->V; i++)
     {
         if (g->array[i].vertex == NULL)
         {
-            g->array[i].vertex = malloc(strlen(vertex) + 1);
-            strcpy(g->array[i].vertex, vertex);
-            coord temp = get_loc(&globalGraph, i);
-            g->array[i].loc.x = temp.x;
-            g->array[i].loc.y = temp.y;
-            g->array[i].loc.z = temp.z;
-            return;
+            points=fibonacci_sphere(x);
+            break;
+        }
+        else
+        {
+            x+=1;
         }
     }
+    for (int i = 0; i < x; i++)
+    {
+        g->array[i].loc.x=points[i].x;
+        g->array[i].loc.y=points[i].y;
+        g->array[i].loc.z=points[i].z;
+    }
+    
 
     printf("Can add only %d nodes as mentioned earlier in Graph init function!\n", g->V);
 
@@ -154,27 +157,24 @@ void func(void)
     glRotatef(angleY, 0.0f, 1.0f, 0.0f);                              // Rotate around Y axis
     GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
     GLfloat white[3] = {0.0f, 0.0f, 0.0f};
-    
+
     for (int i = 0; i < g->V; i++)
     {
         drawSphere(0.2f, 30, 30, redColor, g->array[i].loc.x, g->array[i].loc.y, g->array[i].loc.z, g->array[i].vertex);
     }
     for (int i = 0; i < g->V; i++)
     {
-        Node* ptr=g->array->edges;
+        Node *ptr = g->array->edges;
         while (ptr)
-        {   
-            drawLine(g->array[ptr->id].loc.x, g->array[ptr->id].loc.y, g->array[ptr->id].loc.z,g->array[i].loc.x,g->array[i].loc.y,g->array[i].loc.z,white);
+        {
+            drawLine(g->array[ptr->id].loc.x, g->array[ptr->id].loc.y, g->array[ptr->id].loc.z, g->array[i].loc.x, g->array[i].loc.y, g->array[i].loc.z, white);
             char str[8];
             sprintf(str, "%d", ptr->weight);
-            drawText((g->array[ptr->id].loc.x+g->array[i].loc.x)/2, (g->array[ptr->id].loc.y+g->array[i].loc.y)/2, (g->array[ptr->id].loc.z+g->array[i].loc.z)/2, str);        
-            ptr=ptr->next;
+            drawText((g->array[ptr->id].loc.x + g->array[i].loc.x) / 2, (g->array[ptr->id].loc.y + g->array[i].loc.y) / 2, (g->array[ptr->id].loc.z + g->array[i].loc.z) / 2, str);
+            ptr = ptr->next;
         }
-        
     }
-    
     glutSwapBuffers();
-
     return;
 }
 
@@ -202,7 +202,6 @@ void insertNode(Graph *g, char *s)
 {
     addVertex(g, s);
     printf("node successfully added\n");
-    GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
 }
 
 int search(Graph g, char *s)
@@ -214,3 +213,4 @@ int search(Graph g, char *s)
     }
     return 0;
 }
+
