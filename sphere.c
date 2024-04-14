@@ -130,7 +130,6 @@ void initGL()
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
     glEnable(GL_DEPTH_TEST);              // Enable depth testing for 3D rendering
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

@@ -4,8 +4,7 @@ void menu(int argc, char **argv)
 {
     initBST(&globalTree);
 
-    int choice;
-    char *name = (char *)malloc(sizeof(char) * 50);
+    int choice, val;
 
     do
     {
@@ -25,24 +24,24 @@ void menu(int argc, char **argv)
         switch (choice)
         {
         case 1:
-            printf("Enter Name: ");
-            scanf("%s", name);
-            insertNode(&globalTree, name);
+            printf("Enter Value: ");
+            scanf("%d", &val);
+            insertNode(&globalTree, val);
             printf("Node inserted.\n");
             break;
         case 2:
             printf("Total nodes in the tree: %d\n", count(globalTree));
             break;
         case 3:
-            printf("Enter name number to remove: ");
-            scanf("%s", name);
-            removeNode(&globalTree, name);
+            printf("Enter number to remove node: ");
+            scanf("%d", &val);
+            removeNode(&globalTree, val);
             printf("Node removed.\n");
             break;
         case 4:
-            printf("Enter name number to search: ");
-            scanf("%s", name);
-            if (search(globalTree, name) == 1)
+            printf("Enter number to search node: ");
+            scanf("%d", &val);
+            if (search(globalTree, val) == 1)
                 printf("Node found.\n");
             else
                 printf("Node not found.\n");
