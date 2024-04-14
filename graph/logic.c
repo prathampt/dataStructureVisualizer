@@ -34,10 +34,10 @@ int count(Graph *g){
     int i=0;
     while (g->array[i].vertex!=NULL)
     {
-        cnt += 1;
-        i += 1;
+        cnt+=1;
+        i+=1;
     }
-    return cnt;
+    return cnt;    
 }
 void initGraph(Graph *g, int numberOfVertices)
 {
@@ -57,9 +57,9 @@ void initGraph(Graph *g, int numberOfVertices)
     return;
 }
 
-Node *generateNode(Graph g, char *vertex, int weight)
+Node *generateNode(Graph g,char* vertex, int weight)
 {
-    char *str = (char *)malloc(sizeof(char) * strlen(vertex));
+    char *str=(char *)malloc(sizeof(char)*strlen(vertex));
     strcpy(str, vertex);
     Node *nn = (Node *)malloc(sizeof(Node));
 
@@ -71,11 +71,9 @@ Node *generateNode(Graph g, char *vertex, int weight)
     nn->next = NULL;
     for (int i = 0; i < g.V; i++)
     {
-        if (g.array[i].vertex != NULL)
-        {
-            if (strcmp(g.array[i].vertex, vertex) == 0)
-            {
-                nn->id = i;
+        if (g.array[i].vertex!=NULL){
+            if(strcmp(g.array[i].vertex, vertex)==0){
+                nn->id=i;
                 return nn;
             }
         }
@@ -107,13 +105,6 @@ void addVertex(Graph *g, char *vertex)
             return;
         }
     }
-    for (int i = 0; i < x; i++)
-    {
-        g->array[i].loc.x=points[i].x;
-        g->array[i].loc.y=points[i].y;
-        g->array[i].loc.z=points[i].z;
-    }
-    
 
     free(arr);
 
@@ -143,40 +134,29 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
-    int id1 = -1, id2 = -1, found1 = 0, found2 = 0;
+    int id1 = -1,id2 = -1, found1=0, found2=0;
     for (int i = 0; i < g->V; i++)
     {
-        if (!found1 && strcmp(g->array[i].vertex, vertex1) == 0)
+        if (!found1 && strcmp(g->array[i].vertex, vertex1)==0)
         {
 
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
             id1 = i;
-            found1 = 1;
+            found1=1;
             break;
         }
-        else if (!found2 && strcmp(g->array[i].vertex, vertex2) == 0)
+        else if (!found2 && strcmp(g->array[i].vertex ,vertex2)==0)
         {
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex1, weight);
             g->array[i].edges->next = t;
             id2 = i;
-            found2 = 1;
+            found2=1;
             break;
         }
-        if (found1 && found2)
-            break;
-    }
-    if (found1 && found2)
-    {
-        coord c1 = g->array[id1].loc;
-        coord c2 = g->array[id2].loc;
-        GLfloat whiteColor[3] = {1.0f, 1.0f, 1.0f};
-    }
-    else
-    {
-        printf("self loop not allowed!!\n");
+        if(found1 && found2) break;
     }
 
 
@@ -186,6 +166,7 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
 
     return;
 }
+
 
 void func(void){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -203,6 +184,9 @@ void func(void){
     }
 
     glutSwapBuffers();
+
+
+
     return;
 }
 
@@ -225,17 +209,14 @@ int start(int argc, char **argv){
     return 0;
 }
 
-void insertNode(Graph *g, char *s)
-{
-    addVertex(g, s);
+void insertNode(Graph* g,char* s){
+    addVertex(g,s);
     printf("node successfully added\n");
 }
 
-int search(Graph g, char *s)
-{
+int search(Graph g,char* s){
     int result = checkVertex(g, s);
-    if (result != -1)
-    {
+    if(result != -1){
         return 1;
     }
     return 0;

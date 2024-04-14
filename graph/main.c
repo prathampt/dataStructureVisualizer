@@ -12,9 +12,10 @@ void menu(int argc, char **argv)
         printf("\n----- Graph Tree Menu -----\n");
         printf("1. Insert Node\n");
         printf("2. Count Nodes\n");
-        printf("3. Search Node\n");
-        printf("4. Add Edge between Nodes\n");
-        printf("5. 3D tree\n");
+        printf("3. Remove Node\n");
+        printf("4. Search Node\n");
+        printf("5. Add Edge between Nodes\n");
+        printf("6. 3D tree\n");
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
@@ -44,7 +45,7 @@ void menu(int argc, char **argv)
             else
                 printf("Node not found.\n");
             break;
-        case 4:
+        case 5:
             printf("Enter the node names to have egde between\n");
             scanf("%s",name);
             char name1[50];
@@ -53,7 +54,7 @@ void menu(int argc, char **argv)
             int weight;
             scanf("%d",&weight);
             addEdge(&globalGraph, name, name1, weight);
-        case 5:
+        case 6:
             start(argc, argv);
             break;
         case 0:
