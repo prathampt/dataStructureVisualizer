@@ -2,6 +2,7 @@
 #include"queue/logic.c"
 #include"../sphere.c"
 #include <GL/gl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 // Constants
@@ -87,15 +88,24 @@ void addVertex(Graph *g, char *vertex)
     if (checkVertex(*g, vertex) != -1)
         return;
 
-    coord* arr = fibonacci_sphere(count(&globalGraph)+1);
+    int length = count(&globalGraph);
+    coord* arr;
+
+    if(length != 0){
+        arr = fibonacci_sphere(length+1);
+    }
+    else{
+        arr = malloc(sizeof(coord));
+        arr->x = 0.0;
+        arr->y = 0.0;
+        arr->z = 0.0;
+    }
     for (int i = 0; i < g->V; i++)
     {
         coord temp = arr[i];
         g->array[i].loc.x = temp.x;
         g->array[i].loc.y = temp.y;
         g->array[i].loc.z = temp.z;
-
-        printf("%f\t%f\t%f\t\n",temp.x,temp.y,temp.z);
 
         if (g->array[i].vertex == NULL)
         {
@@ -168,12 +178,14 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
 
 
 void func(void){
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
 
     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
+
 
     GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
     int length = count(&globalGraph);
@@ -182,11 +194,22 @@ void func(void){
         coord loc = v.loc;
         drawSphere(0.2f, 30, 30, redColor, loc.x, loc.y, loc.z, v.vertex);
         Node* t = v.edges;
-        GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
+        GLfloat whiteColor[3] = {0.0f,1.0f,1.0f};
         while(t){
-            if(t->id < i){
-                coord loc1 = globalGraph.array[checkVertex(globalGraph, v.vertex)].loc;
+            if(t->id != i){
+                coord loc1 = globalGraph.array[checkVertex(globalGraph,t->vertex)].loc;
                 drawLine(loc.x, loc.y, loc.z, loc1.x, loc1.y, loc1.z, whiteColor);
+                loc1.x += loc.x;
+                loc1.y += loc.y;
+                loc1.z += loc.z;
+
+                loc1.x /= 2;
+                loc1.y /= 2;
+                loc1.z /= 2;
+
+                char text[20];
+                sprintf(text, "%d", t->weight);
+                drawText(loc1.x,loc1.y,loc1.z,text);
             }
             t = t->next;
         }
