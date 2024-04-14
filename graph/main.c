@@ -32,13 +32,13 @@ void menu(int argc, char **argv)
             printf("Total nodes in the tree: %d\n", count(&globalGraph));
             break;
         case 3:
-            printf("Enter name number to remove: ");
+            printf("Enter name of node to remove: ");
             scanf("%s", name);
             // removeNode(&globalGraph, name);
             printf("Node removed.\n");
             break;
         case 4:
-            printf("Enter name number to search: ");
+            printf("Enter name of node to search: ");
             scanf("%s", name);
             if (search(globalGraph, name) == 1)
                 printf("Node found.\n");

@@ -11,15 +11,15 @@ Graph globalGraph;
 
 coord* fibonacci_sphere(int samples) {
     coord* points = (coord*)malloc(samples * sizeof(coord));
-    double phi = PI * (sqrt(5.0) - 1.0);
+    float phi = PI * (sqrt(5.0) - 1.0);
 
     for (int i = 0; i < samples; i++) {
-        double y = 1.0 - (i / (double)(samples - 1)) * 2.0;
-        double radius = sqrt(1 - y * y);
+        float y = 1.0 - (i / (double)(samples - 1)) * 2.0;
+        float radius = sqrt(1 - y * y);
 
-        double theta = phi * i;
-        double x = cos(theta) * radius;
-        double z = sin(theta) * radius;
+        float theta = phi * i;
+        float x = cos(theta) * radius;
+        float z = sin(theta) * radius;
 
         points[i].x = x;
         points[i].y = y;
@@ -87,19 +87,20 @@ void addVertex(Graph *g, char *vertex)
     if (checkVertex(*g, vertex) != -1)
         return;
 
-    coord* arr = fibonacci_sphere(g->V);
+    coord* arr = fibonacci_sphere(count(&globalGraph)+1);
     for (int i = 0; i < g->V; i++)
     {
+        coord temp = arr[i];
+        g->array[i].loc.x = temp.x;
+        g->array[i].loc.y = temp.y;
+        g->array[i].loc.z = temp.z;
+
+        printf("%f\t%f\t%f\t\n",temp.x,temp.y,temp.z);
+
         if (g->array[i].vertex == NULL)
         {
-            GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
             g->array[i].vertex = malloc(strlen(vertex)+1);
             strcpy(g->array[i].vertex,vertex);
-            coord temp = arr[i];
-            g->array[i].loc.x = temp.x;
-            g->array[i].loc.y = temp.y;
-            g->array[i].loc.z = temp.z;
-            // drawSphere(0.2f, 30, 30, redColor, g->array[i].loc.x, g->array[i].loc.y,g->array[i].loc.z, g->array[i].vertex);
 
             return;
         }
@@ -138,7 +139,7 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     {
         if (!found1 && strcmp(g->array[i].vertex, vertex1)==0)
         {
-            
+
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
@@ -162,22 +163,25 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     coord c1 = g->array[id1].loc;
     coord c2 = g->array[id2].loc;
     GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
-    
-    // drawLine(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z, whiteColor);
-    // drawText((c1.x+c2.x)/2, (c1.y+c2.y)/2, (c1.z+c2.z)/2, "hello");
 
     return;
 }
 
 
 void func(void){
-     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     glLoadIdentity();
-     gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
 
-     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
-     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
+    glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
+    glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
+    GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
+    int length = count(&globalGraph);
+    for(int i = 0;i < length;i++){
+        coord loc = globalGraph.array[i].loc;
+        drawSphere(0.2f, 30, 30, redColor, loc.x, loc.y, loc.z, globalGraph.array[i].vertex);
+    }
 
     glutSwapBuffers();
 
