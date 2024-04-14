@@ -54,6 +54,7 @@ void menu(int argc, char **argv)
             int weight;
             scanf("%d",&weight);
             addEdge(&globalGraph, name, name1, weight);
+            break;
         case 6:
             start(argc, argv);
             break;

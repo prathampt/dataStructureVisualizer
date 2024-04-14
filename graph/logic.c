@@ -162,7 +162,6 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
 
     coord c1 = g->array[id1].loc;
     coord c2 = g->array[id2].loc;
-    GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
 
     return;
 }
@@ -179,8 +178,18 @@ void func(void){
     GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
     int length = count(&globalGraph);
     for(int i = 0;i < length;i++){
-        coord loc = globalGraph.array[i].loc;
-        drawSphere(0.2f, 30, 30, redColor, loc.x, loc.y, loc.z, globalGraph.array[i].vertex);
+        Vertex v = globalGraph.array[i];
+        coord loc = v.loc;
+        drawSphere(0.2f, 30, 30, redColor, loc.x, loc.y, loc.z, v.vertex);
+        Node* t = v.edges;
+        GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
+        while(t){
+            if(t->id < i){
+                coord loc1 = globalGraph.array[checkVertex(globalGraph, v.vertex)].loc;
+                drawLine(loc.x, loc.y, loc.z, loc1.x, loc1.y, loc1.z, whiteColor);
+            }
+            t = t->next;
+        }
     }
 
     glutSwapBuffers();
