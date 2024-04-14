@@ -50,9 +50,11 @@ void menu(int argc, char **argv)
             scanf("%s",name);
             char name1[50];
             scanf("%s",name1);
-            addEdge(&globalGraph, name, name1, 1);
+            printf("Enter the weight of the edge: ");
+            int weight;
+            scanf("%d",&weight);
+            addEdge(&globalGraph, name, name1, weight);
         case 6:
-            start(arg);
             start(argc, argv);
             break;
         case 0:

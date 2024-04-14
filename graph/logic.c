@@ -5,7 +5,16 @@
 #include <wctype.h>
 // Constants
 Graph globalGraph;
-
+int count(Graph *g){
+    int cnt=0;
+    int i=0;
+    while (g->array[i].vertex!=NULL)
+    {
+        cnt+=1;
+        i+=1;
+    }
+    return cnt;    
+}
 void initGraph(Graph *g, int numberOfVertices)
 {
     g->V = numberOfVertices;
@@ -125,7 +134,9 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     coord c1 = g->array[id1].loc;
     coord c2 = g->array[id2].loc;
     GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
+    
     drawLine(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z, whiteColor);
+    drawText((c1.x+c2.x)/2, (c1.y+c2.y)/2, (c1.z+c2.z)/2, whiteColor);
 
     return;
 }
