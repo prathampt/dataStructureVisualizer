@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <stdbool.h>
+#include <string.h>
 #include <stdio.h>
 #include <GL/freeglut.h>
 
@@ -252,3 +253,4 @@ void keyboard(unsigned char key, int x, int y)
 
 //     return 0;
 // }
+//

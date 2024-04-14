@@ -1,0 +1,4 @@
+solved bugs in this commit along with that made an example for our code 
+
+gcc main.c -o main -lGL -lGLU -lglut -lm
+will create an executable for following branch
