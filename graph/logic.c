@@ -5,7 +5,16 @@
 #include <wctype.h>
 // Constants
 Graph globalGraph;
-
+int count(Graph *g){
+    int cnt=0;
+    int i=0;
+    while (g->array[i].vertex!=NULL)
+    {
+        cnt+=1;
+        i+=1;
+    }
+    return cnt;    
+}
 void initGraph(Graph *g, int numberOfVertices)
 {
     g->V = numberOfVertices;
@@ -96,36 +105,38 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
-    int id1 = -1,id2 = -1;
+    int id1 = -1,id2 = -1, found1=0, found2=0;
     for (int i = 0; i < g->V; i++)
     {
-        if (strcmp(g->array[i].vertex, vertex1)==0)
+        if (!found1 && strcmp(g->array[i].vertex, vertex1)==0)
         {
             
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
             id1 = i;
+            found1=1;
             break;
         }
-    }
-
-    for (int i = 0; i < g->V; i++)
-    {
-        if (strcmp(g->array[i].vertex ,vertex2)==0)
+        else if (!found2 && strcmp(g->array[i].vertex ,vertex2)==0)
         {
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex1, weight);
             g->array[i].edges->next = t;
             id2 = i;
+            found2=1;
             break;
         }
+        if(found1 && found2) break;
     }
+
 
     coord c1 = g->array[id1].loc;
     coord c2 = g->array[id2].loc;
     GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
+    
     drawLine(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z, whiteColor);
+    drawText((c1.x+c2.x)/2, (c1.y+c2.y)/2, (c1.z+c2.z)/2, whiteColor);
 
     return;
 }
