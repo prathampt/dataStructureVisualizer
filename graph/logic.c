@@ -96,31 +96,31 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
-    int id1 = -1,id2 = -1;
+    int id1 = -1,id2 = -1, found1=0, found2=0;
     for (int i = 0; i < g->V; i++)
     {
-        if (strcmp(g->array[i].vertex, vertex1)==0)
+        if (!found1 && strcmp(g->array[i].vertex, vertex1)==0)
         {
             
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
             id1 = i;
+            found1=1;
             break;
         }
-    }
-
-    for (int i = 0; i < g->V; i++)
-    {
-        if (strcmp(g->array[i].vertex ,vertex2)==0)
+        else if (!found2 && strcmp(g->array[i].vertex ,vertex2)==0)
         {
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex1, weight);
             g->array[i].edges->next = t;
             id2 = i;
+            found2=1;
             break;
         }
+        if(found1 && found2) break;
     }
+
 
     coord c1 = g->array[id1].loc;
     coord c2 = g->array[id2].loc;
