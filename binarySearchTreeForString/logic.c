@@ -286,10 +286,11 @@ void threeDrecursion(GLfloat x, GLfloat y, GLfloat z, Tree t, int h, int k, int 
     }
 }
 
-void generateColor(float *color, int index, int totalNodes) {
-    float hue = (float)index / totalNodes;  // Varying hue based on node index
-    float saturation = 1.0f;  // Full saturation for vibrant colors
-    float lightness = 0.5f;  // Medium lightness for balanced colors
+void generateColor(float *color, int index, int totalNodes)
+{
+    float hue = (float)index / totalNodes; // Varying hue based on node index
+    float saturation = 1.0f;               // Full saturation for vibrant colors
+    float lightness = 0.5f;                // Medium lightness for balanced colors
 
     // Convert HSL to RGB
     float c = (1.0f - fabs(2.0f * lightness - 1.0f)) * saturation;
@@ -297,27 +298,38 @@ void generateColor(float *color, int index, int totalNodes) {
     float m = lightness - 0.5f * c;
     float r, g, b;
 
-    if (hue < 1.0f / 6.0f) {
+    if (hue < 1.0f / 6.0f)
+    {
         r = c;
         g = x;
         b = 0.0f;
-    } else if (hue < 2.0f / 6.0f) {
+    }
+    else if (hue < 2.0f / 6.0f)
+    {
         r = x;
         g = c;
         b = 0.0f;
-    } else if (hue < 3.0f / 6.0f) {
+    }
+    else if (hue < 3.0f / 6.0f)
+    {
         r = 0.0f;
         g = c;
         b = x;
-    } else if (hue < 4.0f / 6.0f) {
+    }
+    else if (hue < 4.0f / 6.0f)
+    {
         r = 0.0f;
         g = x;
         b = c;
-    } else if (hue < 5.0f / 6.0f) {
+    }
+    else if (hue < 5.0f / 6.0f)
+    {
         r = x;
         g = 0.0f;
         b = c;
-    } else {
+    }
+    else
+    {
         r = c;
         g = 0.0f;
         b = x;
@@ -344,6 +356,7 @@ int start(int argc, char **argv)
     glutKeyboardFunc(keyboard);
 
     initGL();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
 
     glutMainLoop();
 

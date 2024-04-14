@@ -25,6 +25,6 @@ void inorderTraversal(Tree t);
 void postorderTraversal(Tree t);
 
 void threeDtree();
-void threeDrecursion(GLfloat x, GLfloat y, GLfloat z,Tree t, int h, int k, int totalNodes);
+void threeDrecursion(GLfloat x, GLfloat y, GLfloat z, Tree t, int h, int k, int totalNodes);
 void generateColor(float *color, int index, int totalNodes);
 int start(int argc, char **argv);

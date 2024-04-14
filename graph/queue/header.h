@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<limits.h>
 #include<stdlib.h>
-typedef struct node
+typedef struct ele
 {
     int x,y,z,value;   
 }ele;
@@ -14,5 +14,5 @@ typedef struct Queue
 }Queue;
 void initQ(Queue* q,int size);
 void Enqueue(Queue* q,int val,int x, int y, int z);
-int Dequeue(Queue* q);
-// void Display(Queue q);
+ele* Dequeue(Queue* q);
+//k void Display(Queue q);

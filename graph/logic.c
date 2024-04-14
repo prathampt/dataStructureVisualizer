@@ -1,11 +1,45 @@
 #include"header.h"
-#include"math.h"
 #include"queue/logic.c"
 #include"../sphere.c"
+#include <GL/gl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 // Constants
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define PI 3.14159265358979323846
+
 Graph globalGraph;
+
+coord* fibonacci_sphere(int samples) {
+    coord* points = (coord*)malloc(samples * sizeof(coord));
+    float phi = PI * (sqrt(5.0) - 1.0);
+
+    for (int i = 0; i < samples; i++) {
+        float y = 1.0 - (i / (double)(samples - 1)) * 2.0;
+        float radius = sqrt(2 - y * y);
+
+        float theta = phi * i;
+        float x = cos(theta) * radius;
+        float z = sin(theta) * radius;
+
+        points[i].x = x;
+        points[i].y = y;
+        points[i].z = z;
+    }
+
+    return points;
+}
+
+int count(Graph *g){
+    int cnt=0;
+    int i=0;
+    while (g->array[i].vertex!=NULL)
+    {
+        cnt+=1;
+        i+=1;
+    }
+    return cnt;    
+}
 void initGraph(Graph *g, int numberOfVertices)
 {
     g->V = numberOfVertices;
@@ -14,6 +48,10 @@ void initGraph(Graph *g, int numberOfVertices)
 
     for (int i = 0; i < numberOfVertices; i++)
     {
+        g->array[i].loc.x = i;
+        g->array[i].loc.y = i;
+        g->array[i].loc.z = i;
+
         g->array[i].vertex = NULL;
     }
 
@@ -41,6 +79,7 @@ Node *generateNode(Graph g,char* vertex, int weight)
             }
         }
     }
+    return NULL;
 }
 
 void addVertex(Graph *g, char *vertex)
@@ -49,15 +88,35 @@ void addVertex(Graph *g, char *vertex)
     if (checkVertex(*g, vertex) != -1)
         return;
 
+    int length = count(&globalGraph);
+    coord* arr;
+
+    if(length != 0){
+        arr = fibonacci_sphere(length+1);
+    }
+    else{
+        arr = malloc(sizeof(coord));
+        arr->x = 0.0;
+        arr->y = 0.0;
+        arr->z = 0.0;
+    }
     for (int i = 0; i < g->V; i++)
     {
+        coord temp = arr[i];
+        g->array[i].loc.x = temp.x;
+        g->array[i].loc.y = temp.y;
+        g->array[i].loc.z = temp.z;
+
         if (g->array[i].vertex == NULL)
         {
+            g->array[i].vertex = malloc(strlen(vertex)+1);
             strcpy(g->array[i].vertex,vertex);
-            
+
             return;
         }
     }
+
+    free(arr);
 
     printf("Can add only %d nodes as mentioned earlier in Graph init function!\n", g->V);
 
@@ -69,7 +128,7 @@ int checkVertex(Graph g, char *vertex)
 
     for (int i = 0; i < g.V; i++)
     {
-        if (strcmp(g.array[i].vertex, vertex) == 0)
+        if (g.array[i].vertex != NULL && strcmp(g.array[i].vertex, vertex) == 0)
         {
             return i;
         }
@@ -85,158 +144,171 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
+    int id1 = -1,id2 = -1, found1=0, found2=0;
     for (int i = 0; i < g->V; i++)
     {
-        if (strcmp(g->array[i].vertex, vertex1)==0)
+        if (!found1 && strcmp(g->array[i].vertex, vertex1)==0)
         {
+
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
+            id1 = i;
+            found1=1;
             break;
         }
-    }
-
-    for (int i = 0; i < g->V; i++)
-    {
-        if (strcmp(g->array[i].vertex ,vertex2)==0)
+        else if (!found2 && strcmp(g->array[i].vertex ,vertex2)==0)
         {
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex1, weight);
             g->array[i].edges->next = t;
+            id2 = i;
+            found2=1;
             break;
         }
+        if(found1 && found2) break;
     }
+
+
+    coord c1 = g->array[id1].loc;
+    coord c2 = g->array[id2].loc;
 
     return;
 }
 
 
+void func(void){
 
-
-
-// void dfs(Graph g, char *visited, char vertex)
-// {
-//     visited[vertex - 'A'] = 1;
-
-//     Node *e = g.array[checkVertex(g, vertex)].edges;
-
-//     while (e)
-//     {
-//         if (!visited[e->vertex - 'A'])
-//         {
-//             printf("%c ", e->vertex);
-//             dfs(g, visited, e->vertex);
-//         }
-//         e = e->next;
-//     }
-
-//     return;
-// }
-
-// void bfs(Graph g, char *vertex){
-//     Queue q;
-//     initQ(&q, g.V);
-//     enQueue(&q, vertex);
-//     int visited[g.V];
-//     visited[]
-
-//     while (!isEmpty(q))
-//     {
-//         Node *e = g.array[checkVertex(g, vertex)].edges;
-
-//         while (e)
-//         {
-//             if (!visited[e->vertex - 'A']){
-//                 enQueue(&q, e->vertex);
-//                 visited[e->vertex - 'A'] = 1;
-//             }
-//             e = e->next;
-//         }
-//         printf("%c ", deQueue(&q));
-//         if (q.front) vertex = q.front->data;
-//     }
-
-//     return;
-// }
-void DisplayGraph(Graph *g)
-{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     gluLookAt(0.0f, 0.0f, 10.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Set camera position
-    glRotatef(angleX, 1.0f, 0.0f, 0.0f);                              // Rotate around X axis
-    glRotatef(angleY, 0.0f, 1.0f, 0.0f);                              // Rotate around Y axis
-    GLfloat greenColor[3] = {0.0f, 1.0f, 0.0f};
-    GLfloat lineColor[3] = {1.0f, 1.0f, 1.0f}; // White color
 
-    int x = 0.0f, y = 2.0f, z = 0.0f;
-    int rho = 1;
-    float theta, phi;
+    glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
+    glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
-    Queue *q = (Queue *)malloc(sizeof(Queue));
-    if (q == NULL)
-    {
-        printf("Memory allocation failed for the queue.");
-        return;
-    }
-    initQ(q, 2 * g->V);
-    int visited[g->V];
-    for (int i = 0; i < g->V; i++)
-    {
-        visited[i] = 0;
-    }
-    visited[0] = 1;
-    Enqueue(q, 0, 0, 2, 0);
-    while (q->front <= q->rear && q->front != -1 && q->rear != -1)
-    {
-        int ele = Dequeue(q);
-        drawSphere(0.6f, 30, 30, greenColor, x, y, z, &ele);
-        Vertex ver = g->array[ele];
-        Node* ptr=ver.edges;
-        int cnt = 0;
-        for (; ptr; ptr = ptr->next)
-            cnt += 1;
-        int i = 0;
-        for (; ptr; ptr = ptr->next)
-        {
-            if (visited[ptr->id] == 0)
-            {
-                visited[ptr->id] = 1;
-                if (i == 0)
-                {
-                    Enqueue(q, ptr->id, x, y, z + rho);
-                    i += 1;
-                }
-                else if (i == 1)
-                {
-                    Enqueue(q, ptr->id, x, y, z - rho);
-                    i++;
-                }
-                else
-                {
-                    
-                }
+    int length = count(&globalGraph);
+
+    GLfloat Color[3];
+    
+    for(int i = 0;i < length;i++){
+        Vertex v = globalGraph.array[i];
+        coord loc = v.loc;
+        generateColor(Color, i, length);
+        drawSphere(0.6f, 30, 30, Color, loc.x, loc.y, loc.z, v.vertex);
+        Node* t = v.edges;
+        GLfloat whiteColor[3] = {0.0f,1.0f,1.0f};
+        while(t){
+            if(t->id != i){
+                coord loc1 = globalGraph.array[checkVertex(globalGraph,t->vertex)].loc;
+                drawLine(loc.x, loc.y, loc.z, loc1.x, loc1.y, loc1.z, whiteColor);
+                loc1.x += loc.x;
+                loc1.y += loc.y;
+                loc1.z += loc.z;
+
+                loc1.x /= 2;
+                loc1.y /= 2;
+                loc1.z /= 2;
+
+                char text[20];
+                sprintf(text, "%d", t->weight);
+                drawText(loc1.x,loc1.y,loc1.z,text);
             }
-
-            i += 1;
+            t = t->next;
         }
     }
-    free(q);
+
+    glutSwapBuffers();
+
+
+
+    return;
 }
 
-int start(int argc, char **argv)
+void generateColor(float *color, int index, int totalNodes)
 {
+    float hue = (float)index / totalNodes; // Varying hue based on node index
+    float saturation = 1.0f;               // Full saturation for vibrant colors
+    float lightness = 0.5f;                // Medium lightness for balanced colors
 
+    // Convert HSL to RGB
+    float c = (1.0f - fabs(2.0f * lightness - 1.0f)) * saturation;
+    float x = c * (1.0f - fabs(fmod(6.0f * hue, 2.0f) - 1.0f));
+    float m = lightness - 0.5f * c;
+    float r, g, b;
+
+    if (hue < 1.0f / 6.0f)
+    {
+        r = c;
+        g = x;
+        b = 0.0f;
+    }
+    else if (hue < 2.0f / 6.0f)
+    {
+        r = x;
+        g = c;
+        b = 0.0f;
+    }
+    else if (hue < 3.0f / 6.0f)
+    {
+        r = 0.0f;
+        g = c;
+        b = x;
+    }
+    else if (hue < 4.0f / 6.0f)
+    {
+        r = 0.0f;
+        g = x;
+        b = c;
+    }
+    else if (hue < 5.0f / 6.0f)
+    {
+        r = x;
+        g = 0.0f;
+        b = c;
+    }
+    else
+    {
+        r = c;
+        g = 0.0f;
+        b = x;
+    }
+
+    color[0] = r + m;
+    color[1] = g + m;
+    color[2] = b + m;
+}
+
+int start(int argc, char **argv){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutCreateWindow("OpenGL Spheres with Connection Line");
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
-    glutDisplayFunc(DisplayGraph);
+    glutDisplayFunc(func);
     glutReshapeFunc(reshape);
     glutMotionFunc(mouseMovement);
     glutMouseFunc(mouseButton);
+    glutKeyboardFunc(keyboard);
 
     initGL();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
 
     glutMainLoop();
+
+    return 0;
 }
+
+void insertNode(Graph* g,char* s){
+    addVertex(g,s);
+    printf("node successfully added\n");
+}
+
+int search(Graph g,char* s){
+    int result = checkVertex(g, s);
+    if(result != -1){
+        return 1;
+    }
+    return 0;
+}
+
