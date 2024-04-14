@@ -16,7 +16,7 @@ coord* fibonacci_sphere(int samples) {
 
     for (int i = 0; i < samples; i++) {
         float y = 1.0 - (i / (double)(samples - 1)) * 2.0;
-        float radius = sqrt(1 - y * y);
+        float radius = sqrt(2 - y * y);
 
         float theta = phi * i;
         float x = cos(theta) * radius;
@@ -186,13 +186,15 @@ void func(void){
     glRotatef(angleX, 1.0f, 0.0f, 0.0f); // Rotate around X axis
     glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
-
-    GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
     int length = count(&globalGraph);
+
+    GLfloat Color[3];
+    
     for(int i = 0;i < length;i++){
         Vertex v = globalGraph.array[i];
         coord loc = v.loc;
-        drawSphere(0.2f, 30, 30, redColor, loc.x, loc.y, loc.z, v.vertex);
+        generateColor(Color, i, length);
+        drawSphere(0.6f, 30, 30, Color, loc.x, loc.y, loc.z, v.vertex);
         Node* t = v.edges;
         GLfloat whiteColor[3] = {0.0f,1.0f,1.0f};
         while(t){
@@ -222,6 +224,60 @@ void func(void){
     return;
 }
 
+void generateColor(float *color, int index, int totalNodes)
+{
+    float hue = (float)index / totalNodes; // Varying hue based on node index
+    float saturation = 1.0f;               // Full saturation for vibrant colors
+    float lightness = 0.5f;                // Medium lightness for balanced colors
+
+    // Convert HSL to RGB
+    float c = (1.0f - fabs(2.0f * lightness - 1.0f)) * saturation;
+    float x = c * (1.0f - fabs(fmod(6.0f * hue, 2.0f) - 1.0f));
+    float m = lightness - 0.5f * c;
+    float r, g, b;
+
+    if (hue < 1.0f / 6.0f)
+    {
+        r = c;
+        g = x;
+        b = 0.0f;
+    }
+    else if (hue < 2.0f / 6.0f)
+    {
+        r = x;
+        g = c;
+        b = 0.0f;
+    }
+    else if (hue < 3.0f / 6.0f)
+    {
+        r = 0.0f;
+        g = c;
+        b = x;
+    }
+    else if (hue < 4.0f / 6.0f)
+    {
+        r = 0.0f;
+        g = x;
+        b = c;
+    }
+    else if (hue < 5.0f / 6.0f)
+    {
+        r = x;
+        g = 0.0f;
+        b = c;
+    }
+    else
+    {
+        r = c;
+        g = 0.0f;
+        b = x;
+    }
+
+    color[0] = r + m;
+    color[1] = g + m;
+    color[2] = b + m;
+}
+
 int start(int argc, char **argv){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -236,6 +292,7 @@ int start(int argc, char **argv){
     glutKeyboardFunc(keyboard);
 
     initGL();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black
 
     glutMainLoop();
 
