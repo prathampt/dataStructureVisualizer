@@ -29,12 +29,12 @@ void menu(int argc, char **argv)
             printf("Node inserted.\n");
             break;
         case 2:
-            printf("Total nodes in the tree: %d\n", count(globalGraph));
+            printf("Total nodes in the tree: %d\n", count(&globalGraph));
             break;
         case 3:
             printf("Enter name number to remove: ");
             scanf("%s", name);
-            removeNode(&globalGraph, name);
+            // removeNode(&globalGraph, name);
             printf("Node removed.\n");
             break;
         case 4:
