@@ -1,6 +1,8 @@
 #include"header.h"
 #include"queue/logic.c"
 #include"../sphere.c"
+#include <GL/gl.h>
+#include <wctype.h>
 // Constants
 Graph globalGraph;
 
@@ -58,6 +60,10 @@ void addVertex(Graph *g, char *vertex)
             GLfloat redColor[3] = {1.0f, 0.0f, 0.0f};
             g->array[i].vertex = malloc(strlen(vertex)+1);
             strcpy(g->array[i].vertex,vertex);
+            coord temp = get_loc(&globalGraph,i);
+            g->array[i].loc.x = temp.x;
+            g->array[i].loc.y = temp.y;
+            g->array[i].loc.z = temp.z;
             drawSphere(0.2f, 30, 30, redColor, g->array[i].loc.x, g->array[i].loc.y,g->array[i].loc.z, g->array[i].vertex);
 
             return;
@@ -90,13 +96,16 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
+    int id1 = -1,id2 = -1;
     for (int i = 0; i < g->V; i++)
     {
         if (strcmp(g->array[i].vertex, vertex1)==0)
         {
+            
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
+            id1 = i;
             break;
         }
     }
@@ -108,9 +117,15 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex1, weight);
             g->array[i].edges->next = t;
+            id2 = i;
             break;
         }
     }
+
+    coord c1 = g->array[id1].loc;
+    coord c2 = g->array[id2].loc;
+    GLfloat whiteColor[3] = {1.0f,1.0f,1.0f};
+    drawLine(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z, whiteColor);
 
     return;
 }
@@ -229,11 +244,6 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
 // }
 //
 
-
-void god_func(Graph *g){
-}
-
-
 void func(void){
      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
      glLoadIdentity();
@@ -243,10 +253,6 @@ void func(void){
      glRotatef(angleY, 0.0f, 1.0f, 0.0f); // Rotate around Y axis
 
 
-    initGraph(&globalGraph,5);
-    addVertex(&globalGraph,"hello");
-    addVertex(&globalGraph,"byeeesoidjfoijf");
-
     glutSwapBuffers();
 
 
@@ -254,7 +260,7 @@ void func(void){
     return;
 }
 
-int main(int argc, char **argv)
+int start(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -271,5 +277,18 @@ int main(int argc, char **argv)
 
     glutMainLoop();
 
+    return 0;
+}
+
+void insertNode(Graph* g,char* s){
+    addVertex(g,s);
+    printf("node successfully added\n");
+}
+
+int search(Graph g,char* s){
+    int result = checkVertex(g, s);
+    if(result != -1){
+        return 1;
+    }
     return 0;
 }
