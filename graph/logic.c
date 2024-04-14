@@ -227,6 +227,7 @@ int start(int argc, char **argv){
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutCreateWindow("OpenGL Spheres with Connection Line");
+    glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 
     glutDisplayFunc(func);
     glutReshapeFunc(reshape);
