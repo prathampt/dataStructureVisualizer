@@ -20,7 +20,6 @@ Node *generateNode(char *name)
     if (!nn)
         return NULL;
 
-    nn->balancingFactor = 0;
     nn->left = NULL;
     nn->right = NULL;
     nn->parent = NULL;
@@ -116,122 +115,6 @@ Node* minimum(Node* x) {
     }
     return x;
 }
-
-void removeNode(RedBlackTree *t, char *name) {
-    Node *z = *t;
-    while (z != NULL && strcmp(name, z->name) != 0) {
-        if (strcmp(name, z->name) < 0)
-            z = z->left;
-        else
-            z = z->right;
-    }
-
-    if (z == NULL) {
-        printf("Node to be deleted not found!\n");
-        return;
-    }
-
-    Node *y = z;
-    Color originalColor = y->color;
-    Node *x;
-    if (z->left == NULL) {
-        x = z->right;
-        transplant(t, z, z->right);
-    } else if (z->right == NULL) {
-        x = z->left;
-        transplant(t, z, z->left);
-    } else {
-        y = minimum(z->right);
-        originalColor = y->color;
-        x = y->right;
-        if (y->parent == z && x)
-            x->parent = y;
-        else {
-            transplant(t, y, y->right);
-            y->right = z->right;
-            y->right->parent = y;
-        }
-        transplant(t, z, y);
-        y->left = z->left;
-        y->left->parent = y;
-        y->color = z->color;
-    }
-    free(z);
-
-    if (originalColor == BLACK)
-        deleteFixup(t, x);
-}
-
-void deleteFixup(RedBlackTree *t, Node *x) {
-    while (x != *t && x->color == BLACK && x->parent != NULL) {
-        if (x == x->parent->left) {
-            Node *w = x->parent->right;
-            if (w != NULL) {
-                if (w->color == RED) {
-                    w->color = BLACK;
-                    x->parent->color = RED;
-                    leftRotate(t, x->parent);
-                    w = x->parent->right;
-                }
-                if (w != NULL && w->left->color == BLACK && w->right->color == BLACK) {
-                    w->color = RED;
-                    x = x->parent;
-                } else {
-                    if (w != NULL && w->right->color == BLACK) {
-                        if (w->left != NULL)
-                            w->left->color = BLACK;
-                        if (w != NULL)
-                            w->color = RED;
-                        rightRotate(t, w);
-                        w = x->parent->right;
-                    }
-                    if (w != NULL) {
-                        w->color = x->parent->color;
-                        x->parent->color = BLACK;
-                        if (w->right != NULL)
-                            w->right->color = BLACK;
-                        leftRotate(t, x->parent);
-                        x = *t;
-                    }
-                }
-            }
-        } else {
-            Node *w = x->parent->left;
-            if (w != NULL) {
-                if (w->color == RED) {
-                    w->color = BLACK;
-                    x->parent->color = RED;
-                    rightRotate(t, x->parent);
-                    w = x->parent->left;
-                }
-                if (w != NULL && w->right->color == BLACK && w->left->color == BLACK) {
-                    w->color = RED;
-                    x = x->parent;
-                } else {
-                    if (w != NULL && w->left->color == BLACK) {
-                        if (w->right != NULL)
-                            w->right->color = BLACK;
-                        if (w != NULL)
-                            w->color = RED;
-                        leftRotate(t, w);
-                        w = x->parent->left;
-                    }
-                    if (w != NULL) {
-                        w->color = x->parent->color;
-                        x->parent->color = BLACK;
-                        if (w->left != NULL)
-                            w->left->color = BLACK;
-                        rightRotate(t, x->parent);
-                        x = *t;
-                    }
-                }
-            }
-        }
-    }
-    if (x != NULL)
-        x->color = BLACK;
-}
-
 
 void leftRotate(RedBlackTree *t, Node *x) {
     Node *y = x->right;
