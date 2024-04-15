@@ -16,6 +16,10 @@ void menu(int argc, char **argv)
         printf("3. Search Node\n");
         printf("4. Add Edge between Nodes\n");
         printf("5. 3D tree\n");
+        printf("6. To Remove Edge\n");
+        printf("7. To Remove Vertex\n");
+        printf("8. To Display Adjacency List\n");
+
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
@@ -31,12 +35,6 @@ void menu(int argc, char **argv)
         case 2:
             printf("Total nodes in the tree: %d\n", count(&globalGraph));
             break;
-        // case 3:
-        //     printf("Enter name of node to remove: ");
-        //     scanf("%s", name);
-        //     // removeNode(&globalGraph, name);
-        //     printf("Node removed.\n");
-        //     break;
         case 3:
             printf("Enter name of node to search: ");
             scanf("%s", name);
@@ -58,6 +56,21 @@ void menu(int argc, char **argv)
         case 5:
             start(argc, argv);
             break;
+        case 6:
+            char n1[50], n2[50];
+            printf("Enter the names to remove edge\n");
+            scanf("%s %s", n1,n2);
+            removeEdge(&globalGraph, n1, n2);
+            break;
+        case 7:
+            char n[50];
+            printf("Enter the names to remove vertex\n");
+            scanf("%s", n);
+            removeVertex(&globalGraph, n);
+            break;
+        case 8:
+            displayGraph(globalGraph);
+            break;  
         case 0:
             printf("This is what we call as 3D Graph!\n");
             break;

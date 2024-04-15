@@ -1,22 +1,24 @@
-#include"header.h"
-#include"queue/logic.c"
-#include"../sphere.c"
+#include "header.h"
+#include "queue/logic.c"
+#include "../sphere.c"
 #include <GL/gl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 // Constants
-#define PI 3.14159265358979323846
+#define PI 3.14159
 
 Graph globalGraph;
 
-coord* fibonacci_sphere(int samples) {
-    coord* points = (coord*)malloc(samples * sizeof(coord));
+coord *fibonacci_sphere(int samples)
+{
+    coord *points = (coord *)malloc(samples * sizeof(coord));
     float phi = PI * (sqrt(5.0) - 1.0);
 
-    for (int i = 0; i < samples; i++) {
-        float y = 1.0 - (i / (double)(samples - 1)) * 2.0;
-        float radius = sqrt(2 - y * y);
+    for (int i = 0; i < samples; i++)
+    {
+        float y = (1.0 - (i / (double)(samples - 1)) * 2.0) * 3.0;
+        float radius = sqrt(10 - y * y);
 
         float theta = phi * i;
         float x = cos(theta) * radius;
@@ -30,15 +32,16 @@ coord* fibonacci_sphere(int samples) {
     return points;
 }
 
-int count(Graph *g){
-    int cnt=0;
-    int i=0;
-    while (g->array[i].vertex!=NULL)
+int count(Graph *g)
+{
+    int cnt = 0;
+    int i = 0;
+    while (g->array[i].vertex != NULL)
     {
-        cnt+=1;
-        i+=1;
+        cnt += 1;
+        i += 1;
     }
-    return cnt;    
+    return cnt;
 }
 void initGraph(Graph *g, int numberOfVertices)
 {
@@ -58,9 +61,9 @@ void initGraph(Graph *g, int numberOfVertices)
     return;
 }
 
-Node *generateNode(Graph g,char* vertex, int weight)
+Node *generateNode(Graph g, char *vertex, int weight)
 {
-    char *str=(char *)malloc(sizeof(char)*strlen(vertex));
+    char *str = (char *)malloc(sizeof(char) * strlen(vertex));
     strcpy(str, vertex);
     Node *nn = (Node *)malloc(sizeof(Node));
 
@@ -72,9 +75,11 @@ Node *generateNode(Graph g,char* vertex, int weight)
     nn->next = NULL;
     for (int i = 0; i < g.V; i++)
     {
-        if (g.array[i].vertex!=NULL){
-            if(strcmp(g.array[i].vertex, vertex)==0){
-                nn->id=i;
+        if (g.array[i].vertex != NULL)
+        {
+            if (strcmp(g.array[i].vertex, vertex) == 0)
+            {
+                nn->id = i;
                 return nn;
             }
         }
@@ -89,12 +94,14 @@ void addVertex(Graph *g, char *vertex)
         return;
 
     int length = count(&globalGraph);
-    coord* arr;
+    coord *arr;
 
-    if(length != 0){
-        arr = fibonacci_sphere(length+1);
+    if (length != 0)
+    {
+        arr = fibonacci_sphere(length + 1);
     }
-    else{
+    else
+    {
         arr = malloc(sizeof(coord));
         arr->x = 0.0;
         arr->y = 0.0;
@@ -109,8 +116,8 @@ void addVertex(Graph *g, char *vertex)
 
         if (g->array[i].vertex == NULL)
         {
-            g->array[i].vertex = malloc(strlen(vertex)+1);
-            strcpy(g->array[i].vertex,vertex);
+            g->array[i].vertex = malloc(strlen(vertex) + 1);
+            strcpy(g->array[i].vertex, vertex);
 
             return;
         }
@@ -133,7 +140,6 @@ int checkVertex(Graph g, char *vertex)
             return i;
         }
     }
-
     return -1;
 }
 
@@ -144,31 +150,31 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
-    int id1 = -1,id2 = -1, found1=0, found2=0;
+    int id1 = -1, id2 = -1, found1 = 0, found2 = 0;
     for (int i = 0; i < g->V; i++)
     {
-        if (!found1 && strcmp(g->array[i].vertex, vertex1)==0)
+        if (!found1 && strcmp(g->array[i].vertex, vertex1) == 0)
         {
 
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex2, weight);
             g->array[i].edges->next = t;
             id1 = i;
-            found1=1;
+            found1 = 1;
             break;
         }
-        else if (!found2 && strcmp(g->array[i].vertex ,vertex2)==0)
+        else if (!found2 && strcmp(g->array[i].vertex, vertex2) == 0)
         {
             Node *t = g->array[i].edges;
             g->array[i].edges = generateNode(*g, vertex1, weight);
             g->array[i].edges->next = t;
             id2 = i;
-            found2=1;
+            found2 = 1;
             break;
         }
-        if(found1 && found2) break;
+        if (found1 && found2)
+            break;
     }
-
 
     coord c1 = g->array[id1].loc;
     coord c2 = g->array[id2].loc;
@@ -176,8 +182,8 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     return;
 }
 
-
-void func(void){
+void func(void)
+{
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -189,17 +195,20 @@ void func(void){
     int length = count(&globalGraph);
 
     GLfloat Color[3];
-    
-    for(int i = 0;i < length;i++){
+
+    for (int i = 0; i < length; i++)
+    {
         Vertex v = globalGraph.array[i];
         coord loc = v.loc;
         generateColor(Color, i, length);
         drawSphere(0.6f, 30, 30, Color, loc.x, loc.y, loc.z, v.vertex);
-        Node* t = v.edges;
-        GLfloat whiteColor[3] = {0.0f,1.0f,1.0f};
-        while(t){
-            if(t->id != i){
-                coord loc1 = globalGraph.array[checkVertex(globalGraph,t->vertex)].loc;
+        Node *t = v.edges;
+        GLfloat whiteColor[3] = {0.0f, 1.0f, 1.0f};
+        while (t)
+        {
+            if (t->id != i)
+            {
+                coord loc1 = globalGraph.array[checkVertex(globalGraph, t->vertex)].loc;
                 drawLine(loc.x, loc.y, loc.z, loc1.x, loc1.y, loc1.z, whiteColor);
                 loc1.x += loc.x;
                 loc1.y += loc.y;
@@ -211,15 +220,13 @@ void func(void){
 
                 char text[20];
                 sprintf(text, "%d", t->weight);
-                drawText(loc1.x,loc1.y,loc1.z,text);
+                drawText(loc1.x, loc1.y, loc1.z, text);
             }
             t = t->next;
         }
     }
 
     glutSwapBuffers();
-
-
 
     return;
 }
@@ -278,7 +285,8 @@ void generateColor(float *color, int index, int totalNodes)
     color[2] = b + m;
 }
 
-int start(int argc, char **argv){
+int start(int argc, char **argv)
+{
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -299,16 +307,106 @@ int start(int argc, char **argv){
     return 0;
 }
 
-void insertNode(Graph* g,char* s){
-    addVertex(g,s);
+void insertNode(Graph *g, char *s)
+{
+    addVertex(g, s);
     printf("node successfully added\n");
 }
 
-int search(Graph g,char* s){
+int search(Graph g, char *s)
+{
     int result = checkVertex(g, s);
-    if(result != -1){
+    if (result != -1)
+    {
         return 1;
     }
     return 0;
 }
+void removeEdgeByID(Graph *g, int id1, int id2) {
+    Node *ptr1 = g->array[id1].edges;
+    if (ptr1==NULL)
+        return;
+    if (ptr1->id == id2) {
+        g->array[id1].edges = ptr1->next;
+        free(ptr1);
+        return;
+    }
+    while (ptr1->next && ptr1->next->id != id2) {
+        ptr1 = ptr1->next;
+    }
+    if (ptr1->next) {
+        Node *toFree = ptr1->next;
+        ptr1->next = ptr1->next->next;
+        free(toFree);
+    }
 
+    Node *ptr2 = g->array[id2].edges;
+    if (!ptr2)
+        return;
+    if (ptr2->id == id1) {
+        g->array[id2].edges = ptr2->next;
+        free(ptr2);
+        return;
+    }
+    while (ptr2->next && ptr2->next->id != id1) {
+        ptr2 = ptr2->next;
+    }
+    if (ptr2->next) {
+        Node *toFree = ptr2->next;
+        ptr2->next = ptr2->next->next;
+        free(toFree);
+    }
+}
+void displayGraph(Graph g) {
+    int i, cnt=count(&g);
+
+    for (i = 0; i < cnt; i++) {
+        Node *temp = g.array[i].edges;
+        printf("Adjacency list of vertex %s:\n", g.array[i].vertex);
+        while (temp) {
+            printf("%s(%d) -> ", temp->vertex, temp->weight);
+            temp = temp->next;
+        }
+        printf("NULL\n");
+    }
+}
+
+
+void removeEdge(Graph *g, char *vertex1, char *vertex2) {
+    int id1 = -1, id2 = -1;
+    for (int i = 0; i < g->V; i++) {
+        if (strcmp(g->array[i].vertex, vertex1) == 0)
+            id1 = i;
+        if (strcmp(g->array[i].vertex, vertex2) == 0)
+            id2 = i;
+        if (id1 != -1 && id2 != -1) {
+            removeEdgeByID(g, id1, id2);
+            return;
+        }
+    }
+}
+
+void removeVertex(Graph *g, char *vertex) {
+    int isRemove = 0;
+    for (int i = 0; i < g->V; i++) {
+        if (strcmp(g->array[i].vertex, vertex) == 0) {
+            Node *ptr = g->array[i].edges;
+            while (ptr) {
+                Node *ahead = ptr->next;
+                removeEdgeByID(g, i, ptr->id);
+                ptr = ahead;
+            }
+            isRemove = 1;
+            free(g->array[i].vertex);
+            g->array[i].vertex = NULL;
+            g->array[i].edges = NULL;
+            for (int j = i; j < g->V - 1; j++) {
+                g->array[j] = g->array[j + 1];
+            }
+            i--;
+            break;
+        }
+    }
+    if (isRemove == 0)
+        printf("Enter the valid name which exists in graph\n");
+}
