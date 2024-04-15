@@ -34,7 +34,7 @@ typedef struct graph
 } Graph;
 
 void initGraph(Graph * g, int numberOfVertices);
-Node *generateNode(Graph g,char *vertex, int weight);
+Node *generateNode(Graph g,char *vertex, int weight, int id);
 void addVertex(Graph *g, char *vertex);
 int checkVertex(Graph g, char *vertex);
 void addEdge(Graph *g, char *vertex1, char *vertex2, int weight);

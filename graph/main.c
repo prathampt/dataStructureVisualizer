@@ -9,7 +9,7 @@ void menu(int argc, char **argv)
 
     do
     {
-        printf("\n----- Graph Tree Menu -----\n");
+        printf("\n----- Graph Menu -----\n");
         printf("1. Insert Node\n");
         printf("2. Count Nodes\n");
         // printf("3. Remove Node\n");

@@ -61,7 +61,7 @@ void initGraph(Graph *g, int numberOfVertices)
     return;
 }
 
-Node *generateNode(Graph g, char *vertex, int weight)
+Node *generateNode(Graph g, char *vertex, int weight, int id)
 {
     char *str = (char *)malloc(sizeof(char) * strlen(vertex));
     strcpy(str, vertex);
@@ -69,22 +69,11 @@ Node *generateNode(Graph g, char *vertex, int weight)
 
     if (!nn)
         return NULL;
-
     nn->vertex = str;
     nn->weight = weight;
     nn->next = NULL;
-    for (int i = 0; i < g.V; i++)
-    {
-        if (g.array[i].vertex != NULL)
-        {
-            if (strcmp(g.array[i].vertex, vertex) == 0)
-            {
-                nn->id = i;
-                return nn;
-            }
-        }
-    }
-    return NULL;
+    nn->id=id;
+    return nn;
 }
 
 void addVertex(Graph *g, char *vertex)
@@ -150,30 +139,28 @@ void addEdge(Graph *g, char *vertex1, char *vertex2, int weight)
     if (checkVertex(*g, vertex2) == -1)
         addVertex(g, vertex2);
 
-    int id1 = -1, id2 = -1, found1 = 0, found2 = 0;
+    int id1 = -1, id2 = -1;
     for (int i = 0; i < g->V; i++)
     {
-        if (!found1 && strcmp(g->array[i].vertex, vertex1) == 0)
+        if (strcmp(g->array[i].vertex, vertex1) == 0)
         {
+            id1 = i;
+        }
+        else if (strcmp(g->array[i].vertex, vertex2) == 0)
+        {
+            Node *t = g->array[i].edges;
+            id2 = i;
+        }
+        if (id1!=-1 && id2!=-1){
 
             Node *t = g->array[i].edges;
-            g->array[i].edges = generateNode(*g, vertex2, weight);
-            g->array[i].edges->next = t;
-            id1 = i;
-            found1 = 1;
+            g->array[id1].edges = generateNode(*g, vertex2, weight, id2);
+            g->array[id1].edges->next = t;
+            t = g->array[i].edges;
+            g->array[id2].edges = generateNode(*g, vertex2, weight, id1);
+            g->array[id2].edges->next = t;
             break;
         }
-        else if (!found2 && strcmp(g->array[i].vertex, vertex2) == 0)
-        {
-            Node *t = g->array[i].edges;
-            g->array[i].edges = generateNode(*g, vertex1, weight);
-            g->array[i].edges->next = t;
-            id2 = i;
-            found2 = 1;
-            break;
-        }
-        if (found1 && found2)
-            break;
     }
 
     coord c1 = g->array[id1].loc;
@@ -362,7 +349,7 @@ void displayGraph(Graph g) {
 
     for (i = 0; i < cnt; i++) {
         Node *temp = g.array[i].edges;
-        printf("Adjacency list of vertex %s:\n", g.array[i].vertex);
+        printf("Adjacency list of vertex %s:", g.array[i].vertex);
         while (temp) {
             printf("%s(%d) -> ", temp->vertex, temp->weight);
             temp = temp->next;
