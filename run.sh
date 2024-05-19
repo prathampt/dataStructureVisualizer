@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt-get install -y freeglut3-dev libglfw3-dev libglfw3 
+sudo apt-get install -y freeglut3-dev libglfw3-dev libglfw3 > /dev/null 2>&1
 
 # Prompt the user for input
 echo "Enter a number between 1 and 6 (or 0 to Exit):"
@@ -36,7 +36,7 @@ case $num in
         gcc AVLtreeForString/main.c -lGL -lGLU -lglut -lm -g
         ;;
     6)
-        echo "You entered 5."
+        echo "You entered 6."
         gcc RedBlackTreeForString/main.c -lGL -lGLU -lglut -lm -g
         ;;
     0)
@@ -44,7 +44,7 @@ case $num in
         exit
         ;;
     *)
-        echo "Invalid input! Please enter a number between 0 and 4."
+        echo "Invalid input! Please enter a number between 0 and 6."
         exit 1
         ;;
 esac
