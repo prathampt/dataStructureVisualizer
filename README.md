@@ -23,6 +23,13 @@
 ## Inspiration
 Understanding data structures can be challenging, especially when trying to visualize their operations and transformations in real-time. Traditional 2D diagrams often fall short in conveying the dynamic nature of structures like graphs. Inspired by the need for a more immersive learning experience, the **3D Data-Structure Visualizer** was developed **in C**. It aims to bring data structures to life, making learning and teaching them more effective and enjoyable.
 
+## Glimpse
+
+<p align="center">
+  <img src="https://github.com/prathampt/dataStructureVisualizer/blob/main/resources/dataStructureVisualizer.gif" width="45%" alt="Data Structure Visualizer GIF">
+  <img src="https://github.com/prathampt/dataStructureVisualizer/blob/main/resources/red-black-tree-screenshot.png" width="45%" alt="Red-Black Tree Screenshot">
+</p>
+
 ## Features
 - **3D Visualization**: Provides real-time, interactive 3D visualizations of various data structures.
 - **User Interaction**: Allows users to manipulate the data structures, such as inserting or deleting nodes, to see the changes dynamically.
@@ -50,13 +57,6 @@ The tool is designed with extensibility in mind. Developers can add support for 
       ```bash
       ./run.sh
       ```
-
-## Glimpse
-
-<p align="center">
-  <img src="https://github.com/prathampt/dataStructureVisualizer/blob/main/resources/dataStructureVisualizer.gif" width="45%" alt="Data Structure Visualizer GIF">
-  <img src="https://github.com/prathampt/dataStructureVisualizer/blob/main/resources/red-black-tree-screenshot.png" width="45%" alt="Red-Black Tree Screenshot">
-</p>
 
 ## Technologies Used
 - **C**: The programming language used for the entire project.
